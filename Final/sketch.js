@@ -31,6 +31,7 @@ var loading = 0;
 var restarting = 0;
 var noItemMode = false;
 var bombRadius = 0;
+var gameoverSoundPlay = 0;
 
 
 function preload(){
@@ -43,6 +44,8 @@ function preload(){
   matrixbgm = loadSound('data/BUG.m4a');
   gtfobgm = loadSound('data/Night of Nights.mp3');
   nibgm = loadSound('data/_Undertale - Megalovania.mp3')
+  clearSound = loadSound('data/Overwatch D.va Ultimate - Nerf This! Sound Effect.mp3');
+  gameoverSound = loadSound('data/Reaper - Ultimate.mp3')
 }
 function setup() {
   createCanvas( 300, 600);
@@ -57,7 +60,7 @@ function draw() {
     startScreen();
     return;
   }
-  if( loading < 300){
+  if( loading < 300 && noItemMode == false){
     loading += 1;
     howToPlay();
     return;
@@ -178,8 +181,10 @@ function randomLetter(){
     return random("qwertyuiopasdfghjklzxcvbnm".split(""));
   }else if(r < 0.01){
     return "s";
-  }else if(r < 0.09){
-    return random(["!","c","f","x"]);
+  }else if(r < 0.07){
+    return random(["!","c","x"]);
+  }else if(r < 0.085){
+    return "f";
   }else{
     return random("qwertyuiopadghjklzvbnm".split(""));
   }
@@ -199,6 +204,8 @@ function keyTyped(){//deleted letters that are types
       }else if( key == "c" && noItemMode == false){
         score += letters[i].length;
         letters[i] = [];
+        clearSound.setVolume(3);
+        clearSound.play();
       }else if( key == "f" && noItemMode == false){
         emp.push(i);
         score += letters[i].length;
@@ -366,6 +373,9 @@ function howToPlay(){
   
 }
 function gameover(){
+  if( gameoverSoundPlay < 1){
+    gameoverSound.play();
+  }
   background(0);
   textAlign(LEFT);
   fill(255,0,0);
@@ -374,6 +384,7 @@ function gameover(){
   text( "Score: " + score, 100, 230);
   text( "Accuracy: " + Math.round( correct / numKeyTyped * 100 ) + "%", 63, 260);
   text( "Game restarts in " + Math.ceil((600 - restarting)/ 60), 23, 290);
+  gameoverSoundPlay += 1;
 }
 
 function youWon(){
@@ -409,5 +420,3 @@ function restart(){
   gtfoStarted = false;
   niStarted = false;
 }
-///info screen before start
-///sound
